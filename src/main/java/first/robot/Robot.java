@@ -12,9 +12,22 @@ import org.wpilib.epilogue.Logged;
 
 @Logged
 public class Robot extends LoggedRobot {
+	private RobotContainer robotContainer;
+
 	public Robot() {
 		//Configure AdvantageKit
-		Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+        Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+        Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+        Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+        Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+        Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+        Logger.recordMetadata(
+                "GitDirty",
+                switch (BuildConstants.DIRTY) {
+                    case 0 -> "All changes committed";
+                    case 1 -> "Uncommitted changes";
+                    default -> "Unknown";
+                });
 		if (isReal()) {
 			Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
 			Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
@@ -25,6 +38,9 @@ public class Robot extends LoggedRobot {
 			Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
 		}
 		Logger.start();
+
+		//Initialize robot container
+		robotContainer = new RobotContainer();
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package first;
+package first.robot;
 
 import org.wpilib.framework.RobotBase;
 
@@ -16,6 +16,6 @@ public final class Main {
 	 * <p>If you change your main robot class, change the parameter type.
 	 */
 	public static void main(String... args) {
-		RobotBase.startRobot(first.robot.Robot::new);
+		RobotBase.startRobot(Robot::new);
 	}
 }
