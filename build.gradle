@@ -93,9 +93,12 @@ test {
     systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
 }
 
-// Simulation configuration (e.g. environment variables).
-wpi.sim.addGui().defaultEnabled = true
-wpi.sim.addDriverstation()
+// Simulation configuration (reads environment variubles)
+def useSimGui = System.getenv("SAASQUATCH_USE_SIMGUI")
+def useRealDriverStation = System.getenv("SAASQUATCH_USE_REAL_DS")
+
+wpi.sim.addGui().defaultEnabled = (useSimGui == "true" || useSimGui == "1")
+wpi.sim.addDriverstation().defaultEnabled = (useRealDriverStation == "true" || useRealDriverStation == "1")
 
 application.mainClass = ROBOT_MAIN_CLASS
 
