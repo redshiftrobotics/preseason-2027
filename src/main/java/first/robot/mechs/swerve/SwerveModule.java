@@ -57,14 +57,10 @@ public class SwerveModule {
     }
 
     public void setTargetModuleVelocity(SwerveModuleVelocity _targetVelocity) {
-        //Optimize the velocity to minimize heading change
-        _targetVelocity.optimize(inputs.turnAbsPositionRad);
-        
-        //Cosine scaling for smoother driving (wow)
-        _targetVelocity.cosineScale(inputs.turnAbsPositionRad);
+        //Optimize the velocity to minimize heading change and apply cosine scaling for smoother driving
+        targetVelocity = _targetVelocity.optimize(inputs.turnAbsPositionRad).cosineScale(inputs.turnAbsPositionRad);
 
         //Apply
-        targetVelocity = _targetVelocity;
         io.setDriveMotorVelocity(targetVelocity.velocity / Constants.WHEEL_RADIUS_METERS);
         io.setTurnMotorPosition(targetVelocity.angle);
     }

@@ -1,6 +1,5 @@
 package first.robot.mechs.swerve;
 
-import org.littletonrobotics.junction.AutoLog;
 import org.wpilib.math.controller.PIDController;
 import org.wpilib.math.controller.SimpleMotorFeedforward;
 import org.wpilib.math.geometry.Rotation2d;
@@ -13,8 +12,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private final DCMotor driveMotor = DCMotor.getKrakenX60Foc(1);
     private final DCMotor turnMotor = DCMotor.getKrakenX60Foc(1);
 
-    private double driveVolts = 0.0, driveFFwdVolts = 0.0, turnVolts = 0.0;
-
+    private double driveVolts = 0.0;
+    private double driveFFwdVolts = 0.0;
+    private double turnVolts = 0.0;
 
     private final DCMotorSim driveSim;
     private final DCMotorSim turnSim;
@@ -24,7 +24,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
     private final SimpleMotorFeedforward driveFFwd;
 
-    private boolean driveUseClosedLoop = false, turnUseClosedLoop = false;
+    private boolean driveUseClosedLoop = false;
+    private boolean turnUseClosedLoop = false;
 
     public SwerveModuleIOSim() {
         //Don't ask why it's called singleJointedArm... this is just how you do it now... WHYYYYYYYY
@@ -42,7 +43,36 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
     @Override
     public void updateInputs(SwerveModuleIOInputs inputs) {
+        if(driveUseClosedLoop) {
+			driveVolts = driveFFwdVolts + drivePID.calculate(driveSim.getAngularVelocity());
+		} else {
+			drivePID.reset();
+		}
 
+		if(turnUseClosedLoop) {
+			turnVolts = turnPID.calculate(turnSim.getAngularPosition());
+		} else {
+			turnPID.reset();
+		}
+
+		driveSim.setInputVoltage(Math.clamp(driveVolts, -12.0f, 12.0f));
+		turnSim.setInputVoltage(Math.clamp(turnVolts, -12.0f, 12.0f));
+
+		driveSim.update(Constants.LOOP_PERIOD_SECONDS);
+		turnSim.update(Constants.LOOP_PERIOD_SECONDS);
+
+		inputs.driveAppliedVolts = driveVolts;
+		inputs.driveCurrentSupplyAmps = Math.abs(driveSim.getCurrentDraw());
+		inputs.drivePositionRad = driveSim.getAngularPosition();
+		inputs.driveVelocityRadPerSec = driveSim.getAngularVelocity();
+		inputs.driveMotorConnected = true;
+		inputs.turnAppliedVolts = turnVolts;
+		inputs.turnCurrentSupplyAmps = Math.abs(turnSim.getCurrentDraw());
+		inputs.turnPositionRad = Rotation2d.fromRadians(turnSim.getAngularPosition());
+		inputs.turnAbsPositionRad = inputs.turnPositionRad;
+		inputs.turnVelocityRadPerSec = turnSim.getAngularVelocity();
+		inputs.turnMotorConnected = true;
+		inputs.turnAbsEncoderConnected = true;
     }
 
     @Override
