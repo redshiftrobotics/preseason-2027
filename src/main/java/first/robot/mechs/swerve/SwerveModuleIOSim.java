@@ -76,25 +76,46 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     }
 
     @Override
-    public void setDriveMotorVoltage(double voltage) {}
+    public void setDriveMotorVoltage(double voltage) {
+        driveUseClosedLoop = false;
+        driveVolts = voltage;
+    }
 
     @Override
-    public void setTurnMotorVoltage(double voltage) {}
+    public void setTurnMotorVoltage(double voltage) {
+        turnUseClosedLoop = false;
+        turnVolts = voltage;
+    }
 
     @Override
-    public void setDriveMotorVelocity(double velocityRadPerSec) {}
+    public void setDriveMotorVelocity(double velocityRadPerSec) {
+        driveUseClosedLoop = true;
+        drivePID.setSetpoint(velocityRadPerSec);
+        driveFFwdVolts = driveFFwd.calculate(velocityRadPerSec);
+    }
 
     @Override
-    public void setTurnMotorPosition(Rotation2d position) {}
+    public void setTurnMotorPosition(Rotation2d position) {
+        turnUseClosedLoop = true;
+        turnPID.setSetpoint(position.getRadians());
+    }
 
     @Override
-    public void setDriveMotorPidGains(double kp, double ki, double kd) {}
+    public void setDriveMotorPidGains(double kp, double ki, double kd) {
+        drivePID.setPID(kp, ki, kd);
+    }
 
     @Override
-    public void setTurnMotorPidGains(double kp, double ki, double kd) {}
+    public void setTurnMotorPidGains(double kp, double ki, double kd) {
+        turnPID.setPID(kp, ki, kd);
+    }
 
     @Override
-    public void setDriveMotorFFwdGains(double ks, double kv, double ka) {}
+    public void setDriveMotorFFwdGains(double ks, double kv, double ka) {
+        driveFFwd.setKs(ks);
+        driveFFwd.setKv(kv);
+        driveFFwd.setKa(ka);
+    }
 
     @Override
     public void setDriveMotorBrake(boolean brake) {}
@@ -103,5 +124,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     public void setTurnMotorBrake(boolean brake) {}
 
     @Override
-    public void stop() {}
+    public void stop() {
+        setDriveMotorVoltage(0);
+        setTurnMotorVoltage(0);
+    }
 }
