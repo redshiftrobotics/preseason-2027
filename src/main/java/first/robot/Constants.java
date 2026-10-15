@@ -28,6 +28,12 @@ public class Constants {
     /** Joystick control deadband */
 	public static final double JOYSTICK_DEADBAND = 0.15;
 
+	/** Gyro device ID */
+	public static final int GYRO_DEVICE_ID = switch(ROBOT_TYPE) {
+		case SIM_2027 -> -1;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> TunerConstants2026.DrivetrainConstants.Pigeon2Id;
+	};
+
     /** Drivetrain PID gains */
     public static final double MODULE_DRIVE_PID_KP = 0;
     public static final double MODULE_DRIVE_PID_KI = 0;
@@ -145,4 +151,18 @@ public class Constants {
 
     /** CAN bus name */
     public static final String CAN_BUS_NAME = "canivore";
+
+	/** Drivetrain device disconnect warning thresholds
+	  * Basically, if the device is still disconnected after this time we know
+	  * something is up 
+	  */
+	public static final double DRIVETRAIN_MOTOR_DISCONNECT_WARNING_THRESHOLD_SECONDS = 0.5;
+	public static final double DRIVETRAIN_ENCODER_DISCONNECT_WARNING_THRESHOLD_SECONDS = 0.2;
+
+	/** Drive odometry polling frequency */
+	public static final double DRIVETRAIN_ODOMETRY_FREQUENCY_HZ = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 50.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> (TunerConstants2026.kCANBus.isNetworkFD() ? 250.0 : 100.0);
+		default -> 100.0;
+	};
 }

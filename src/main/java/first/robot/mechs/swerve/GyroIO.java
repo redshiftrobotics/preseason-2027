@@ -7,7 +7,7 @@ public interface GyroIO {
     @AutoLog
     public static class GyroIOInputs {
         public Rotation2d yaw = Rotation2d.ZERO;
-        public double angularVelocityRadPerSec;
+        public double yawVelocityRadPerSec;
         public boolean gyroConnected = false;
     }
 

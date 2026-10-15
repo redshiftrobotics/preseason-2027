@@ -5,12 +5,15 @@ import org.wpilib.command3.button.CommandXboxController;
 
 import first.robot.mechs.swerve.Drivetrain;
 import first.robot.mechs.swerve.GyroIO;
+import first.robot.mechs.swerve.GyroIOPigeon2;
 import first.robot.mechs.swerve.SwerveModuleIOSim;
 import first.robot.mechs.swerve.SwerveModuleIOTalonFX;
+import first.robot.utils.JoystickInputHelper;
 
 public class RobotContainer {
     //Controller
     private final CommandXboxController driverController = new CommandXboxController(Constants.DRIVER_CONTROLLER_PORT_ID);
+    private JoystickInputHelper inputHelper;
 
     //Subsystems
     private final Drivetrain drivetrain;
@@ -25,7 +28,7 @@ public class RobotContainer {
                 break;
             case IMAGINARY_PHYSICAL_ROBOT_2027:
                 drivetrain = new Drivetrain(new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_FL_CONFIG), new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_FR_CONFIG), 
-                    new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_BL_CONFIG), new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_BR_CONFIG), new GyroIO() {});
+                    new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_BL_CONFIG), new SwerveModuleIOTalonFX(Constants.SWERVE_MODULE_BR_CONFIG), new GyroIOPigeon2());
                 break;
             default:
                 drivetrain = null;
@@ -42,6 +45,10 @@ public class RobotContainer {
     }
 
     public void configureBindings() {
-
+        //Set up joystick helper
+        inputHelper = new JoystickInputHelper(() -> -driverController.getLeftY(), () -> -driverController.getLeftX(), () -> -driverController.getRightX());
+        
+        //Set default drive command
+        drivetrain.setDefaultCommand(drivetrain.teleOpDrive(inputHelper));
     }
 }
