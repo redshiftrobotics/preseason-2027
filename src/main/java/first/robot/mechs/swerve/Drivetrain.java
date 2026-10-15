@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.wpilib.annotation.NoDiscard;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
 import org.wpilib.command3.button.CommandXboxController;
@@ -30,7 +31,7 @@ public class Drivetrain implements Mechanism {
     //Gyro
     private GyroIO gyroIO;
     private GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-    private Rotation2d yaw;
+    private Rotation2d yaw = Rotation2d.ZERO;
 
     //No-gyro yaw estimation data
 	private SwerveModulePosition[] lastKnownModulePositions;
@@ -77,7 +78,7 @@ public class Drivetrain implements Mechanism {
 
     public void setTargetWheelVelocities(SwerveModuleVelocity[] velocities) {
         //Adjust speeds to account for speed caps
-        SwerveDriveKinematics.desaturateWheelVelocities(velocities, Constants.DRIVETRAIN_CONFIG.maxLinearVelocity());
+        velocities = SwerveDriveKinematics.desaturateWheelVelocities(velocities, Constants.DRIVETRAIN_CONFIG.maxLinearVelocity());
 
         //Apply speeds
         for(byte i = 0; i < modules.length; i++) {

@@ -28,14 +28,14 @@ public class Robot extends LoggedRobot {
                     case 1 -> "Uncommitted changes";
                     default -> "Unknown";
                 });
-		if (isReal()) {
-			Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
-			Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
-		} else {
-			setUseTiming(false); // Run as fast as possible
-			String logPath = LogFileUtil.findReplayLog(); // Pull the replay log from AdvantageScope (or prompt the user)
-			Logger.setReplaySource(new WPILOGReader(logPath)); // Read replay log
-			Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim"))); // Save outputs to a new log
+		switch(Constants.ROBOT_TYPE) {
+			case SIM_2027:
+				Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+				break;
+			case IMAGINARY_PHYSICAL_ROBOT_2027:
+				Logger.addDataReceiver(new WPILOGWriter()); // Log to a USB stick ("/U/logs")
+				Logger.addDataReceiver(new NT4Publisher()); // Publish data to NetworkTables
+				break;
 		}
 		Logger.start();
 

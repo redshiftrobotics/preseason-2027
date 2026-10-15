@@ -17,7 +17,7 @@ public class SwerveModule {
     private String moduleName;
 
     //Target stage storage
-    private SwerveModuleVelocity targetVelocity;
+    private SwerveModuleVelocity targetVelocity = new SwerveModuleVelocity();
     
     public SwerveModule(SwerveModuleIO _io, Translation2d _distanceFromRobotCenter, String _moduleName) {
         //Set properties
