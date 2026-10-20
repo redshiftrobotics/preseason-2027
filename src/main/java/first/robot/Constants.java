@@ -35,17 +35,56 @@ public class Constants {
 	};
 
     /** Drivetrain PID gains */
-    public static final double MODULE_DRIVE_PID_KP = 0;
-    public static final double MODULE_DRIVE_PID_KI = 0;
-    public static final double MODULE_DRIVE_PID_KD = 0;
-    public static final double MODULE_TURN_PID_KP = 0;
-    public static final double MODULE_TURN_PID_KI = 0;
-    public static final double MODULE_TURN_PID_KD = 0;
+    public static final double MODULE_DRIVE_PID_KP = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 1.3;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 20.0;
+	};
+    public static final double MODULE_DRIVE_PID_KI = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
+    public static final double MODULE_DRIVE_PID_KD = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
+    public static final double MODULE_TURN_PID_KP  = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 10.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 1400.0;
+	};
+    public static final double MODULE_TURN_PID_KI = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
+    public static final double MODULE_TURN_PID_KD = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 15.0;
+	};
 
     /** Drivetrain feedforward gains */
-    public static final double MODULE_DRIVE_FFWD_KS = 0;
-    public static final double MODULE_DRIVE_FFWD_KV = 0;
-    public static final double MODULE_DRIVE_FFWD_KA = 0;
+    public static final double MODULE_DRIVE_FFWD_KS = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 2.00544;
+	};
+    public static final double MODULE_DRIVE_FFWD_KV = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 1.05719;
+	};
+    public static final double MODULE_DRIVE_FFWD_KA = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
+	public static final double MODULE_TURN_FFWD_KS = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.2;
+	};
+    public static final double MODULE_TURN_FFWD_KV = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
+    public static final double MODULE_TURN_FFWD_KA = switch(ROBOT_TYPE) {
+		case SIM_2027 -> 0.0;
+		case IMAGINARY_PHYSICAL_ROBOT_2027 -> 0.0;
+	};
 
     /** Robot wheel radius */
     public static final double WHEEL_RADIUS_METERS = Units.inchesToMeters(2);

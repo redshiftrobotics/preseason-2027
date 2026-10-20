@@ -10,7 +10,7 @@ import first.robot.Constants;
 
 public class SwerveModuleIOSim implements SwerveModuleIO {
     private final DCMotor driveMotor = DCMotor.getKrakenX60Foc(1);
-    private final DCMotor turnMotor = DCMotor.getKrakenX60Foc(1);
+    private final DCMotor turnMotor = DCMotor.getKrakenX44Foc(1);
 
     private double driveVolts = 0.0;
     private double driveFFwdVolts = 0.0;

@@ -169,11 +169,12 @@ public class Drivetrain implements Mechanism {
 
     public Command teleOpDrive(JoystickInputHelper input) {
         return run(coroutine -> {
-            while(RobotState.isTeleopEnabled()) {
-                Translation2d translation = input.getTranslation();
-                ChassisVelocities velocities = new ChassisVelocities(translation.getX(), translation.getY(), input.getOmega());
-                setTargetRobotVelocities(velocities);
-
+            while(RobotState.isTeleop()) {
+                if(RobotState.isEnabled()) {
+                    Translation2d translation = input.getTranslation();
+                    ChassisVelocities velocities = new ChassisVelocities(translation.getX(), translation.getY(), input.getOmega());
+                    setTargetRobotVelocities(velocities);
+                }
                 coroutine.yield();
             }
            stop();
