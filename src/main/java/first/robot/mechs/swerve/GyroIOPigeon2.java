@@ -24,31 +24,23 @@ public class GyroIOPigeon2 implements GyroIO {
     private final Debouncer connectionDebouncer = new Debouncer(Constants.DRIVETRAIN_ENCODER_DISCONNECT_WARNING_THRESHOLD_SECONDS);
 
     public GyroIOPigeon2() {
-        //THIS CODE IS HUMAN RYDERED BY ME AND RYDER (ABREUEAORWEUARUAOSEIRUWPAOEIRUPWIRAFD)
-        gyro = new Pigeon2(Constants.GYRO_DEVICE_ID ,new CANBus(Constants.CAN_BUS_NAME));
+        gyro = new Pigeon2(Constants.GYRO_DEVICE_ID, new CANBus(Constants.CAN_BUS_NAME));
         yaw = gyro.getYaw();
         yawVelocity = gyro.getAngularVelocityZWorld();
 
-        //my ingredients consist of
         Pigeon2Configuration config = new Pigeon2Configuration();
         gyro.getConfigurator().apply(config);
 
-        //Watermelon and Pineapple
         gyro.setYaw(0);
-        yaw.setUpdateFrequency(Constants.DRIVETRAIN_ODOMETRY_FREQUENCY_HZ);//todo make constants
-
-    
-        //as you leave the door open  my tempture drops
-        yawVelocity.setUpdateFrequency(50);        
+        yaw.setUpdateFrequency(Constants.DRIVETRAIN_ODOMETRY_FREQUENCY_HZ);
+        yawVelocity.setUpdateFrequency(Constants.DRIVETRAIN_ODOMETRY_FREQUENCY_HZ);
         gyro.optimizeBusUtilization();
-
     }
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
         StatusCode status = BaseStatusSignal.refreshAll(yaw, yawVelocity);
 
-        //and my indgreentnes becaome less 
 		inputs.gyroConnected = connectionDebouncer.calculate(status.isOK());
 		inputs.yaw = Rotation2d.fromDegrees(yaw.getValueAsDouble());
 		inputs.yawVelocityRadPerSec = Units.degreesToRadians(yawVelocity.getValueAsDouble());
@@ -56,6 +48,5 @@ public class GyroIOPigeon2 implements GyroIO {
 
     public void ResetGyro(){
         gyro.reset();
-        //Close the god dam door
     }
 }

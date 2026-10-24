@@ -199,7 +199,7 @@ public class Constants {
 	public static final double DRIVETRAIN_ENCODER_DISCONNECT_WARNING_THRESHOLD_SECONDS = 0.2;
 
 	/** Drive odometry polling frequency */
-	public static final double DRIVETRAIN_ODOMETRY_FREQUENCY_HZ = switch(ROBOT_TYPE) {
+	public static final double DRIVETRAIN_ODOMETRY_FREQUENCY_HZ = switch(ROBOT_TYPE) { // why are we polling at a rate higher than our update rate? - acei
 		case SIM_2027 -> 50.0;
 		case IMAGINARY_PHYSICAL_ROBOT_2027 -> (TunerConstants2026.kCANBus.isNetworkFD() ? 250.0 : 100.0);
 		default -> 100.0;

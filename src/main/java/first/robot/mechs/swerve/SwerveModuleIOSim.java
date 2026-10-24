@@ -28,7 +28,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private boolean turnUseClosedLoop = false;
 
     public SwerveModuleIOSim() {
-        //Don't ask why it's called singleJointedArm... this is just how you do it now... WHYYYYYYYY
+        // singleJointedArmFromPhysicalConstants is intended to replace createDcMotorSystem
+        // this swerve module is not actually an arm, but this just uses the same math as we want
         driveSim = new DCMotorSim(Models.singleJointedArmFromPhysicalConstants(driveMotor, 0.025, Constants.DRIVE_REDUCTION), driveMotor);
         turnSim = new DCMotorSim(Models.singleJointedArmFromPhysicalConstants(turnMotor, 0.025, Constants.TURN_REDUCTION), turnMotor);
 
@@ -43,13 +44,13 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
     @Override
     public void updateInputs(SwerveModuleIOInputs inputs) {
-        if(driveUseClosedLoop) {
+        if (driveUseClosedLoop) {
 			driveVolts = driveFFwdVolts + drivePID.calculate(driveSim.getAngularVelocity());
 		} else {
 			drivePID.reset();
 		}
 
-		if(turnUseClosedLoop) {
+		if (turnUseClosedLoop) {
 			turnVolts = turnPID.calculate(turnSim.getAngularPosition());
 		} else {
 			turnPID.reset();

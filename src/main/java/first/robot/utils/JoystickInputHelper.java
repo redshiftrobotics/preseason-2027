@@ -12,7 +12,6 @@ import org.wpilib.math.util.MathUtil;
 
 import first.robot.Constants;
 
-import org.wpilib.driverstation.DriverStation;
 import org.wpilib.driverstation.RobotState;
 
 public class JoystickInputHelper {

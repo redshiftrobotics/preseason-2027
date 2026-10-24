@@ -2,7 +2,6 @@ package first.robot.mechs.swerve;
 
 import static org.wpilib.units.Units.Amps;
 
-import org.littletonrobotics.junction.AutoLog;
 import org.wpilib.math.filter.Debouncer;
 import org.wpilib.math.geometry.Rotation2d;
 import org.wpilib.math.util.Units;
@@ -17,7 +16,6 @@ import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -122,8 +120,7 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
 
     @Override
     public void setDriveMotorVelocity(double velocityRadPerSec) {
-        // Division is because there's no method Unit to convert radians per second to rotations per second
-        driveMotor.setControl(velocityTorque.withVelocity(velocityRadPerSec / (2*Math.PI)));
+        driveMotor.setControl(velocityTorque.withVelocity(radiansPerSecondToRotationsPerSecond(velocityRadPerSec)));
     }
 
     @Override
@@ -174,5 +171,9 @@ public class SwerveModuleIOTalonFX implements SwerveModuleIO {
     public void stop() {
         driveMotor.stopMotor();
         turnMotor.stopMotor();
+    }
+
+    private static double radiansPerSecondToRotationsPerSecond(double radiansPerSecond) {
+        return radiansPerSecond / (2 * Math.PI);
     }
 }

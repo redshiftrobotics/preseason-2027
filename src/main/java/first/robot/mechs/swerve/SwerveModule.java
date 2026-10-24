@@ -19,11 +19,11 @@ public class SwerveModule {
     //Target stage storage
     private SwerveModuleVelocity targetVelocity = new SwerveModuleVelocity();
     
-    public SwerveModule(SwerveModuleIO _io, Translation2d _distanceFromRobotCenter, String _moduleName) {
+    public SwerveModule(SwerveModuleIO io, Translation2d distanceFromRobotCenter, String moduleName) {
         //Set properties
-        io = _io;
-        distanceFromRobotCenter = _distanceFromRobotCenter;
-        moduleName = _moduleName;
+        this.io = io;
+        this.distanceFromRobotCenter = distanceFromRobotCenter;
+        this.moduleName = moduleName;
 
         //Configure motor gains
         io.setDriveMotorPidGains(Constants.MODULE_DRIVE_PID_KP, Constants.MODULE_DRIVE_PID_KI, Constants.MODULE_DRIVE_PID_KD);
@@ -56,13 +56,13 @@ public class SwerveModule {
         return targetVelocity;
     }
 
-    public void setTargetModuleVelocity(SwerveModuleVelocity _targetVelocity) {
+    public void setTargetModuleVelocity(SwerveModuleVelocity targetVelocity) {
         //Optimize the velocity to minimize heading change and apply cosine scaling for smoother driving
-        targetVelocity = _targetVelocity.optimize(inputs.turnAbsPositionRad).cosineScale(inputs.turnAbsPositionRad);
+        this.targetVelocity = targetVelocity.optimize(inputs.turnAbsPositionRad).cosineScale(inputs.turnAbsPositionRad);
 
         //Apply
-        io.setDriveMotorVelocity(targetVelocity.velocity / Constants.WHEEL_RADIUS_METERS);
-        io.setTurnMotorPosition(targetVelocity.angle);
+        io.setDriveMotorVelocity(this.targetVelocity.velocity / Constants.WHEEL_RADIUS_METERS);
+        io.setTurnMotorPosition(this.targetVelocity.angle);
     }
 
     public void stop() {
