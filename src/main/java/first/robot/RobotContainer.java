@@ -51,4 +51,8 @@ public class RobotContainer {
         //Set default drive command
         drivetrain.setDefaultCommand(drivetrain.teleOpDrive(inputHelper));
     }
+
+    public void periodic() {
+        Scheduler.getDefault().run();
+    }
 }
