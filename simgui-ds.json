@@ -55,5 +55,5 @@
     "buttonCount": 0,
     "povCount": 0
   }],
-  "robotJoysticks": [{"guid": "Keyboard0"}, {"guid": "Keyboard1"}]
+  "robotJoysticks": [{"guid": "0300f5a35e040000120b000009050000"}, {"guid": "Keyboard1"}]
 }

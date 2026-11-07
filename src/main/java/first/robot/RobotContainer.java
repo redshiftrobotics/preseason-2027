@@ -1,5 +1,6 @@
 package first.robot;
 
+import org.wpilib.command3.Command;
 import org.wpilib.command3.Scheduler;
 import org.wpilib.command3.button.CommandXboxController;
 
@@ -50,6 +51,10 @@ public class RobotContainer {
         
         //Set default drive command
         drivetrain.setDefaultCommand(drivetrain.teleOpDrive(inputHelper));
+
+        //Driver inputs
+        driverController.a().onTrue(drivetrain.toggleFieldRelativeDriving());
+        driverController.x().onTrue(drivetrain.stopRobot());
     }
 
     public void periodic() {

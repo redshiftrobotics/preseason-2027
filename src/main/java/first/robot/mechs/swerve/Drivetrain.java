@@ -6,7 +6,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.wpilib.command3.Command;
 import org.wpilib.command3.Mechanism;
+import org.wpilib.driverstation.Alliance;
+import org.wpilib.driverstation.MatchState;
 import org.wpilib.driverstation.RobotState;
+import org.wpilib.hardware.hal.AllianceStationID;
 import org.wpilib.math.estimator.SwerveDrivePoseEstimator;
 import org.wpilib.math.geometry.Pose2d;
 import org.wpilib.math.geometry.Rotation2d;
@@ -37,7 +40,7 @@ public class Drivetrain implements Mechanism {
 
     // Robot state
     private Pose2d pose = new Pose2d();
-    private ChassisVelocities measuredVelocities = new ChassisVelocities();
+    private boolean fieldRelativeEnabled = false;
     private ChassisVelocities targetVelocities = new ChassisVelocities();
 
     public Drivetrain(SwerveModuleIO flIO, SwerveModuleIO frIO, SwerveModuleIO blIO, SwerveModuleIO brIO, GyroIO _gyroIO) {
@@ -59,9 +62,16 @@ public class Drivetrain implements Mechanism {
     }
 
     public void setTargetRobotVelocities(ChassisVelocities velocities) {
+        // Apply field relative transformation
+        if(fieldRelativeEnabled) {
+            Rotation2d rotated = getPose().getRotation();
+            if(MatchState.getAlliance().orElse(Alliance.RED) == Alliance.BLUE) rotated = rotated.rotateBy(Rotation2d.PI);
+            rotated = Rotation2d.PI.times(2).minus(rotated);
+            velocities = velocities.toFieldRelative(rotated);
+        }
+
         // Discretize speeds to account for loop periods instead of continuous control
         targetVelocities = velocities.discretize(Constants.LOOP_PERIOD_SECONDS);
-        measuredVelocities = targetVelocities;
 
         // Set wheel velocities
         setTargetWheelVelocities(kinematics.toSwerveModuleVelocities(targetVelocities));
@@ -69,10 +79,6 @@ public class Drivetrain implements Mechanism {
 
     public ChassisVelocities getTargetRobotVelocities() {
         return targetVelocities;
-    }
-
-    public ChassisVelocities getMeasuredRobotVelocities() {
-        return measuredVelocities;
     }
 
     public void setTargetWheelVelocities(SwerveModuleVelocity[] velocities) {
@@ -127,8 +133,7 @@ public class Drivetrain implements Mechanism {
         Logger.processInputs("Drive/Gyro", gyroInputs);
         Logger.recordOutput("Drive/WheelVelocities/Measured", getMeasuredWheelVelocities());
         Logger.recordOutput("Drive/WheelVelocities/Target", getTargetWheelVelocities());
-        Logger.recordOutput("Drive/RobotVelocities/Measured", getMeasuredRobotVelocities());
-        Logger.recordOutput("Drive/RobotVelocities/Target", getTargetRobotVelocities());
+        Logger.recordOutput("Drive/RobotVelocities", getTargetRobotVelocities());
 
         // Stop if robot has been disabled
         if (RobotState.isDisabled()) {
@@ -163,7 +168,7 @@ public class Drivetrain implements Mechanism {
             yaw = yaw.plus(new Rotation2d(twist.dtheta));
         }
 
-        //Update pose estimator
+        // Update pose estimator
         pose = poseEstimator.update(yaw, Arrays.stream(modules).map(SwerveModule::getCurrentModulePosition).toArray(SwerveModulePosition[]::new));
     }
 
@@ -180,5 +185,19 @@ public class Drivetrain implements Mechanism {
             }
             stop();
         }).named("Tele-Op Drive");
+    }
+
+    public Command toggleFieldRelativeDriving() {
+        return run(coroutine -> {
+            fieldRelativeEnabled = !fieldRelativeEnabled;
+            coroutine.yield();
+        }).named("Toggle Field Relative Driving");
+    }
+
+    public Command stopRobot() {
+        return run(coroutine -> {
+            stop();
+            coroutine.yield();
+        }).named("Stop");
     }
 }
